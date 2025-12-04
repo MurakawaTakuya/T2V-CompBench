@@ -274,13 +274,10 @@ def eval_model(args):
             num = int(grid_image_name[0:4]) - 1
 
             this_prompt = prompts[num]["prompt"]
-            phrase_0 = prompts[num]["phrase_0"]  # get first obj and action in a list
-            phrase_1 = prompts[num]["phrase_1"]  # get second obj and action in a list
+            phrase_0 = prompts[num]["phrase_0"]  # get obj and action in a list
 
             obj1 = phrase_0[0].split("?")[0]
             obj1_action = phrase_0[1].split("?")[0]
-            obj2 = phrase_1[0].split("?")[0]
-            obj2_action = phrase_1[1].split("?")[0]
 
             image_files = [os.path.join(image_grid_path, grid_images[i])]
             images = load_images(image_files)
@@ -346,12 +343,10 @@ def eval_model(args):
 
                 Q2 = f"To evaluate if the text '{this_prompt}' is correctly portrayed in the video, please carefully answer the following questions. \n \
 Question: \n \
-A: Both '{obj1}' and {obj2} are clearly present in the video. \n \
-B: Only {obj1} is present, {obj2} is not depicted \n \
-C: Only {obj2} is present, {obj1} is not depicted \n \
-D: Neither {obj1} nor {obj2} appears in the video. \
+A: '{obj1}' is clearly present in the video. \n \
+B: '{obj1}' is not depicted in the video. \
 Select the most suitable option according to the video and your previous description. \
-Put the option in JSON format with the following keys: option (e.g., A), explanation (explaining the option made within 50 words), adjust (adjusted option after explanation, e.g., C)."
+Put the option in JSON format with the following keys: option (e.g., A), explanation (explaining the option made within 50 words), adjust (adjusted option after explanation, e.g., B)."
 
                 qs2 = Q2
                 conv.append_message(conv.roles[0], qs2)
@@ -393,39 +388,15 @@ Put the option in JSON format with the following keys: option (e.g., A), explana
 
                 print("option_value_2 ", option_value_2)
 
-                Q3_A = f"Please select the most suitable options for the two questions: \n \
-Question 1: \n\
-A1: '{obj1_action}' is clearly depicted . \n \
-B1: It is not obvious if '{obj1_action}'. \n \
-C1: The action of '{obj1_action}' is not depicted \n \
-Question 2: \n\
-A2: '{obj2_action}' is clearly depicted . \n \
-B2: It is not obvious if '{obj2_action}'. \n \
-C2: The action of '{obj2_action}' is not depicted \n \
-Put each option in a JSON format with the following keys: option (e.g., A1,B2), explanation (explaining the option made within 50 words), adjust (adjusted option after explanation, e.g., A1,C2)."
-
-                Q3_BC_obj1 = f"Please select the most suitable option:\n \
+                if option_value_2 == "A":
+                    Q3 = f"Please select the most suitable option:\n \
 A: '{obj1_action}' is clearly depicted . \n \
 B: It is not obvious if '{obj1_action}'. \n \
 C: The action of '{obj1_action}' is not depicted \n \
-Put the options in JSON format with the following keys: option (e.g., A), explanation (explaining the option made within 50 words), adjust (adjusted option after explanation, e.g., B)."
-                Q3_BC_obj2 = f"Please select the most suitable option:\n \
-A: '{obj2_action}' is clearly depicted . \n \
-B: It is not obvious if '{obj2_action}'. \n \
-C: The action of '{obj2_action}' is not depicted \n \
-Put the options in JSON format with the following keys: option (e.g., A), explanation (explaining the option made within 50 words), adjust (adjusted option after explanation, e.g., B)."
-
-                if option_value_2 == "A":
-                    Q3 = Q3_A
+Put the option in JSON format with the following keys: option (e.g., A), explanation (explaining the option made within 50 words), adjust (adjusted option after explanation, e.g., B)."
                     ask_Q3 = True
                 elif option_value_2 == "B":
-                    Q3 = Q3_BC_obj1
-                    ask_Q3 = True
-                elif option_value_2 == "C":
-                    Q3 = Q3_BC_obj2
-                    ask_Q3 = True
-                elif option_value_2 == "D":
-                    score_tmp = 1
+                    score_tmp = 1  # obj1が存在しない場合、最低スコア
                     ask_Q3 = False
                 else:
                     ask_Q3 = False
@@ -477,24 +448,12 @@ Put the options in JSON format with the following keys: option (e.g., A), explan
                     option_value_3 = ",".join(adjust_values)
                     print("option_value_3 ", option_value_3)
 
-                    if option_value_3 in ["A1,A2", "A2,A1"]:
-                        score_tmp = 10
-                    elif option_value_3 in ["A1,B2", "B1,A2", "A2,B1", "B2,A1"]:
-                        score_tmp = 9
-                    elif option_value_3 in ["A1,C2", "C1,A2", "A2,C1", "C2,A1"]:
-                        score_tmp = 8
-                    elif option_value_3 in ["B1,B2", "B2,B1"]:
-                        score_tmp = 7
-                    elif option_value_3 in ["B1,C2", "C1,B2", "B2,C1", "C2,B1"]:
-                        score_tmp = 6
-                    elif option_value_3 in ["C1,C2", "C2,C1"]:
-                        score_tmp = 5
-                    elif option_value_3 in ["A"]:
-                        score_tmp = 4
-                    elif option_value_3 in ["B"]:
-                        score_tmp = 3
-                    elif option_value_3 in ["C"]:
-                        score_tmp = 2
+                    if option_value_3 == "A":
+                        score_tmp = 4  # obj1のアクションが明確に描かれている
+                    elif option_value_3 == "B":
+                        score_tmp = 3  # obj1のアクションが不明確
+                    elif option_value_3 == "C":
+                        score_tmp = 2  # obj1のアクションが描かれていない
                     else:
                         score_tmp = "bad reply ?"
                         print("reply wrong format")
@@ -544,7 +503,11 @@ def model_score(csv_path):
         cnt = 0
         for line in lines[1:]:
             try:
-                score_tmp = (float(line[-1]) - 1) / 9  # normalize
+                raw_score = float(line[-1])
+                # Ensure score is at least 1 (minimum score)
+                if raw_score < 1:
+                    raw_score = 1
+                score_tmp = (raw_score - 1) / 3  # normalize
                 score += score_tmp
                 cnt += 1
             except:
