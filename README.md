@@ -14,24 +14,32 @@ This repository is the official implementation of the following paper:
 > IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2025
 
 ### Table of Contents
-- [Updates](#updates)
-- [Overview](#overview)
-- [Evaluation Results](#evaluation_results)
-- [Leaderboard](#leaderboard)
-- [Prompt Suite](#prompt_suite)
-- [Installation](#installation)
-- [Prepare Evaluation Videos](#prepare_videos)
-- [MLLM-based Evaluation](#mllm_eval)
-  - [Consistent Attribute Binding](#consistent_attribute_binding)
-  - [Dynamic Attribute Binding](#dynamic_attribute_binding)
-  - [Action Binding](#action_binding)
-  - [Object Interactions](#object_interactions)
-- [Detection-based Evaluation](#detection_eval)
-  - [Spatial Relationships](#spatial_relationships)
-  - [Generative Numeracy](#generative_numeracy)
-- [Tracking-based Evaluation](#tracking_eval)
-  - [Motion Binding](#motion_binding)
-- [Citation](#citation)
+- [T2V-CompBench: A Comprehensive Benchmark for Compositional Text-to-video Generation](#t2v-compbench-a-comprehensive-benchmark-for-compositional-text-to-video-generation)
+    - [Table of Contents](#table-of-contents)
+  - [🚩 Updates](#-updates)
+  - [:mega: Overview](#mega-overview)
+  - [:mortar\_board: Evaluation Results](#mortar_board-evaluation-results)
+  - [:mortar\_board: How to join T2V-CompBench Leaderboard](#mortar_board-how-to-join-t2v-compbench-leaderboard)
+    - [Instructions:](#instructions)
+  - [:blue\_book: T2V-CompBench Prompt Suite](#blue_book-t2v-compbench-prompt-suite)
+  - [:hammer: Installation](#hammer-installation)
+  - [:clapper: Prepare Evaluation Videos](#clapper-prepare-evaluation-videos)
+  - [:speech\_balloon: MLLM-based Evaluation](#speech_balloon-mllm-based-evaluation)
+    - [:running: Run the Evaluation Scripts](#running-run-the-evaluation-scripts)
+      - [:tangerine: Consistent Attribute Binding](#tangerine-consistent-attribute-binding)
+      - [:lemon: Dynamic Attribute Binding](#lemon-dynamic-attribute-binding)
+      - [:whale: Action Binding](#whale-action-binding)
+      - [:crystal\_ball: Object Interactions](#crystal_ball-object-interactions)
+  - [:mag\_right: Detection-based Evaluation](#mag_right-detection-based-evaluation)
+    - [:running: Run the Evaluation Scripts](#running-run-the-evaluation-scripts-1)
+      - [:cactus: Spatial Relationships](#cactus-spatial-relationships)
+      - [:apple: Generative Numeracy](#apple-generative-numeracy)
+  - [:tractor: Tracking-based Evaluation](#tractor-tracking-based-evaluation)
+    - [:running: Run the Evaluation Scripts](#running-run-the-evaluation-scripts-2)
+      - [:white\_circle: Motion Binding](#white_circle-motion-binding)
+        - [step 1: prepare the input images](#step-1-prepare-the-input-images)
+        - [step 2: Track the foregroud and background points](#step-2-track-the-foregroud-and-background-points)
+  - [:black\_nib: Citation](#black_nib-citation)
 
 <a name="updates"></a>
 ## 🚩 Updates
@@ -383,4 +391,18 @@ If you find T2V-CompBench useful for your research, please cite our paper. :)
   journal={arXiv preprint arXiv:2407.14505},
   year={2024}
 }
+```
+
+
+```bsah
+python3 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip
+pip install "torch==2.3.0" --index-url https://download.pytorch.org/whl/cu121
+pip install "xformers==0.0.26.post1" --no-build-isolation
+cd LLaVA
+pip install -e . --no-deps
+pip install -e ".[train]" --no-deps
+pip install "torch==2.3.0" "torchvision==0.18.0" --index-url https://download.pytorch.org/whl/cu121
+pip install transformers==4.37.2 timm==0.6.13
 ```
