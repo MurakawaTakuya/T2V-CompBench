@@ -236,7 +236,7 @@ def eval_model(args):
     else:
         line_count = 0
 
-    with open(csv_path, "a", newline="") as csvfile:
+    with open(csv_path, "w", newline="") as csvfile:
         # Create a CSV writer
         csv_writer = csv.writer(csvfile)
         if line_count == 0:
