@@ -1,0 +1,218 @@
+[
+  {
+    "name": "handstanding",
+    "prompt": "A man is handstanding in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is handstanding?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  },
+  {
+    "name": "jumping",
+    "prompt": "A man is jumping in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is jumping?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  },
+  {
+    "name": "running",
+    "prompt": "A man is running in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is running?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  },
+  {
+    "name": "somersaulting",
+    "prompt": "A man is somersaulting in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is somersaulting?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  },
+  {
+    "name": "standing_up",
+    "prompt": "A man is standing up in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is standing up?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  },
+  {
+    "name": "throwing",
+    "prompt": "A man is throwing in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is throwing?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  },
+  {
+    "name": "turning",
+    "prompt": "A man is turning in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is turning?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  },
+  {
+    "name": "walking",
+    "prompt": "A man is walking in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is walking?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  },
+  {
+    "name": "discus_throw",
+    "prompt": "A man is doing discus throw in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is doing discus throw?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  },
+  {
+    "name": "high_jump",
+    "prompt": "A man is doing high jump in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is doing high jump?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  },
+  {
+    "name": "javelin_throw",
+    "prompt": "A man is doing javelin throw in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is doing javelin throw?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  },
+  {
+    "name": "long_jump",
+    "prompt": "A man is doing long jump in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is doing long jump?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  },
+  {
+    "name": "platform_diving",
+    "prompt": "A man is doing platform diving in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is doing platform diving?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  },
+  {
+    "name": "triple_jump",
+    "prompt": "A man is doing triple jump in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is doing triple jump?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  },
+  {
+    "name": "flic_flac",
+    "prompt": "A man is doing flic flac in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is doing flic flac?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  },
+  {
+    "name": "hurdle_race",
+    "prompt": "A man is doing hurdle race in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is doing hurdle race?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  },
+  {
+    "name": "handstand_walk",
+    "prompt": "A man is doing handstand walk in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is doing handstand walk?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  },
+  {
+    "name": "skip",
+    "prompt": "A man is doing skip in the stadium",
+    "phrase_0": [
+      "a man?",
+      "a man is doing skip?"
+    ],
+    "phrase_1": [
+      "the stadium?",
+      "in the stadium?"
+    ]
+  }
+]

@@ -138,7 +138,10 @@ class Video_preprocess:
         )
         os.makedirs(output_path, exist_ok=True)
 
-        for v in video:
+        # Create a mapping file to store original video names
+        mapping = []
+        
+        for idx, v in enumerate(video, start=1):
             vid_id = v.split(".")[0]
             vid_path = os.path.join(video_path, v)
             frames = self.extract_frames(vid_path)
@@ -147,10 +150,20 @@ class Video_preprocess:
             )  # take 6 from 16 evenly, 1st & last included
             grid = [frames[i] for i in frame_indices]
             grid_image = self.merge_grid(grid)
-            grid_filename = os.path.join(output_path, f"{vid_id}.png")
+            # Use sequential numbering instead of original video name
+            grid_filename = os.path.join(output_path, f"{idx:04d}.png")
             cv2.imwrite(grid_filename, grid_image)
+            # Store mapping of sequential number to original video name
+            mapping.append({"index": f"{idx:04d}.png", "original_name": vid_id})
+        
+        # Save mapping to JSON file
+        mapping_file = os.path.join(output_path, "video_mapping.json")
+        with open(mapping_file, 'w') as f:
+            json.dump(mapping, f, indent=2)
+        
         print("finish converting from path: ", video_path)
         print("image grid stored in: ", output_path)
+        print("video name mapping saved to: ", mapping_file)
         return output_path
 
 
@@ -281,16 +294,53 @@ def eval_model(args):
         grid_images = [f for f in os.listdir(image_grid_path) if f[0].isdigit()]
         grid_images = sorted(grid_images)
         print(len(grid_images))
+        
+        # Load video name mapping
+        mapping_file = os.path.join(image_grid_path, "video_mapping.json")
+        if os.path.exists(mapping_file):
+            with open(mapping_file, 'r') as f:
+                video_mapping = json.load(f)
+            # Create dict for easy lookup: image_name -> original_video_name
+            image_to_video = {item["index"]: item["original_name"] for item in video_mapping}
+        else:
+            # Fallback: if no mapping file, assume old format
+            image_to_video = None
+            print("Warning: video_mapping.json not found, using old format")
+        
+        # Create dict for easy lookup: name -> prompt_data
+        name_to_prompt = {prompt["name"]: prompt for prompt in prompts}
 
         evaluated = max(line_count - 1, 0)
 
         for i in range(evaluated, len(grid_images)):
             # set_seed(args.seed)
             grid_image_name = grid_images[i]
-            num = int(grid_image_name[0:4]) - 1
-
-            this_prompt = prompts[num]["prompt"]
-            phrase_0 = prompts[num]["phrase_0"]  # get obj and action in a list
+            
+            # Get original video name
+            if image_to_video:
+                original_video_name = image_to_video.get(grid_image_name)
+                if not original_video_name:
+                    print(f"Skipping {grid_image_name}: no mapping found")
+                    continue
+                
+                # Find matching prompt by checking if any prompt name is in video name
+                matched_prompt = None
+                for prompt_name, prompt_data in name_to_prompt.items():
+                    if prompt_name in original_video_name:
+                        matched_prompt = prompt_data
+                        break
+                
+                if not matched_prompt:
+                    print(f"Skipping {grid_image_name} (original: {original_video_name}): no matching prompt found")
+                    continue
+                
+                this_prompt = matched_prompt["prompt"]
+                phrase_0 = matched_prompt["phrase_0"]
+            else:
+                # Old format: use index-based lookup
+                num = int(grid_image_name[0:4]) - 1
+                this_prompt = prompts[num]["prompt"]
+                phrase_0 = prompts[num]["phrase_0"]
 
             obj1 = phrase_0[0].split("?")[0]
             obj1_action = phrase_0[1].split("?")[0]
@@ -587,8 +637,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--t2v-model",
         type=str,
-        required=True,
-        help="model name",
+        default=None,
+        help="model name (if not specified, uses the last directory name of video-path)",
     )
 
     parser.add_argument(
@@ -598,6 +648,11 @@ if __name__ == "__main__":
         help="image grid path",
     )
     args = parser.parse_args()
+    
+    # If t2v-model is not specified, use the last directory name from video-path
+    if args.t2v_model is None:
+        args.t2v_model = os.path.basename(os.path.normpath(args.video_path))
+        print(f"t2v-model not specified, using directory name: {args.t2v_model}")
 
     csv_path = eval_model(args)
     model_score(csv_path)
