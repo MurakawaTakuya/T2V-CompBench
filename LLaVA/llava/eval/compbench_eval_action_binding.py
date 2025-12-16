@@ -127,15 +127,18 @@ class Video_preprocess:
         print("standard video stored in: ", output_path)
         return output_path
 
-    def convert_video_to_grid(self, video_path, num_image=6):
+    def convert_video_to_grid(self, video_path, num_image=6, output_base_path=None):
         video, video_path = self.read_video_path(video_path)
         print(
             "start converting video to image grid with 6 frames from path:", video_path
         )
 
-        output_path = os.path.join(
-            os.path.dirname(video_path), "image_grid", os.path.basename(video_path)
-        )
+        if output_base_path is None:
+            output_path = os.path.join(
+                os.path.dirname(video_path), "image_grid", os.path.basename(video_path)
+            )
+        else:
+            output_path = output_base_path
         os.makedirs(output_path, exist_ok=True)
 
         # Create a mapping file to store original video names
@@ -237,7 +240,9 @@ def eval_model(args):
     if image_grid_path == None:
         video_path = args.video_path
         video_preprocess = Video_preprocess()
-        image_grid_path = video_preprocess.convert_video_to_grid(video_path)
+        image_grid_path = video_preprocess.convert_video_to_grid(
+            video_path, output_base_path=args.output_grid_path
+        )
 
     # Model
     disable_torch_init()
@@ -645,7 +650,13 @@ if __name__ == "__main__":
         "--image_grid_path",
         type=str,
         default=None,
-        help="image grid path",
+        help="existing image grid path (if provided, skips video conversion)",
+    )
+    parser.add_argument(
+        "--output-grid-path",
+        type=str,
+        default=None,
+        help="output path for generated image grids (if not specified, uses default location)",
     )
     args = parser.parse_args()
     

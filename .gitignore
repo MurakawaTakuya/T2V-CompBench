@@ -3,3 +3,4 @@ video
 __pycache__
 llava.egg-info
 csv_action_binding
+grid

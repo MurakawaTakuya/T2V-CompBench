@@ -1,11 +1,18 @@
 ```bash
 source venv/bin/activate
 cd LLaVA
+# 改造前
 CUDA_VISIBLE_DEVICES=0,1,2,3 python llava/eval/compbench_eval_action_binding.py \
   --video-path ../video/action_binding \
   --output-path ../csv_action_binding \
   --read-prompt-file ../meta_data/action_binding_test.json \
   --t2v-model mymodel
+# 改造後
+CUDA_VISIBLE_DEVICES=0,1,2,3 python llava/eval/compbench_eval_action_binding.py \
+  --video-path ../video/action_binding \
+  --output-path ../csv_action_binding \
+  --output-grid-path ../grid \
+  --read-prompt-file ../meta_data/action_binding_test.json
 ```
 
 # T2V-CompBench: A Comprehensive Benchmark for Compositional Text-to-video Generation
