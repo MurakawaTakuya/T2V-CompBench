@@ -172,9 +172,23 @@ def load_images(image_files):
 
 
 def extract_json(string):
-    # Find the start and end positions of the JSON part
+    # Find the start and end positions of the first JSON part only
     start = string.find("{")
-    end = string.rfind("}") + 1
+    if start == -1:
+        print("No JSON found in string")
+        return None
+
+    # Count braces to find the end of the first complete JSON object
+    brace_count = 0
+    end = start
+    for i, char in enumerate(string[start:], start):
+        if char == "{":
+            brace_count += 1
+        elif char == "}":
+            brace_count -= 1
+            if brace_count == 0:
+                end = i + 1
+                break
 
     # Extract the JSON part from the string
     json_part = string[start:end]
@@ -182,9 +196,11 @@ def extract_json(string):
     # Load the JSON part as a dictionary
     try:
         json_data = json.loads(json_part)
-    except json.JSONDecodeError:
+        print(f"Successfully parsed JSON: {json_data}")
+    except json.JSONDecodeError as e:
         # Handle the case when the JSON part is not valid
-        print("Invalid JSON part")
+        print(f"Invalid JSON part: {e}")
+        print(f"JSON part was: '{json_part}'")
         return None
 
     return json_data
@@ -346,7 +362,7 @@ Question: \n \
 A: '{obj1}' is clearly present in the video. \n \
 B: '{obj1}' is not depicted in the video. \
 Select the most suitable option according to the video and your previous description. \
-Put the option in JSON format with the following keys: option (e.g., A), explanation (explaining the option made within 50 words), adjust (adjusted option after explanation, e.g., B)."
+Put the option in JSON format with the following keys: option (e.g., A), explanation (explaining the option made within 50 words), adjust (must be either A or B, same as option or corrected based on explanation)."
 
                 qs2 = Q2
                 conv.append_message(conv.roles[0], qs2)
@@ -380,6 +396,8 @@ Put the option in JSON format with the following keys: option (e.g., A), explana
                 conv.messages[-1][-1] = output_2
 
                 json_obj_2 = extract_json(output_2)
+                print(f"Q2 output_2: {output_2}")
+                print(f"Q2 json_obj_2: {json_obj_2}")
 
                 try:
                     option_value_2 = json_obj_2["adjust"]
@@ -438,14 +456,15 @@ Put the option in JSON format with the following keys: option (e.g., A), explana
                 outputs_3.append(output_3)
 
                 if ask_Q3:
-                    adjust_values = []
-                    for line in output_3.splitlines():
-                        if '"adjust":' in line:
-                            # Extract the value after "adjust:"
-                            value = line.split(":")[1].strip().strip('",')
-                            adjust_values.append(value)
+                    json_obj_3 = extract_json(output_3)
+                    print(f"Q3 output_3: {output_3}")
+                    print(f"Q3 json_obj_3: {json_obj_3}")
 
-                    option_value_3 = ",".join(adjust_values)
+                    try:
+                        option_value_3 = json_obj_3["adjust"]
+                    except:
+                        option_value_3 = "bad reply 2"
+
                     print("option_value_3 ", option_value_3)
 
                     if option_value_3 == "A":

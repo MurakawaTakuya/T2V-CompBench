@@ -1,3 +1,13 @@
+```bash
+source venv/bin/activate
+cd LLaVA
+CUDA_VISIBLE_DEVICES=0,1,2,3 python llava/eval/compbench_eval_action_binding.py \
+  --video-path ../video/action_binding \
+  --output-path ../csv_action_binding \
+  --read-prompt-file ../meta_data/action_binding_test.json \
+  --t2v-model mymodel
+```
+
 # T2V-CompBench: A Comprehensive Benchmark for Compositional Text-to-video Generation
 
 <a href='https://t2v-compbench-2025.github.io/'><img src='https://img.shields.io/badge/Project-Page-Green'></a>
