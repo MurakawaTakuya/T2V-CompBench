@@ -127,7 +127,7 @@ class Video_preprocess:
         print("standard video stored in: ", output_path)
         return output_path
 
-    def convert_video_to_grid(self, video_path, num_image=6, output_base_path=None):
+    def convert_video_to_grid(self, video_path, num_image=6, output_base_path=None, t2v_model_name=None):
         video, video_path = self.read_video_path(video_path)
         print(
             "start converting video to image grid with 6 frames from path:", video_path
@@ -138,7 +138,11 @@ class Video_preprocess:
                 os.path.dirname(video_path), "image_grid", os.path.basename(video_path)
             )
         else:
-            output_path = output_base_path
+            # Create subdirectory with t2v_model name if provided
+            if t2v_model_name:
+                output_path = os.path.join(output_base_path, t2v_model_name)
+            else:
+                output_path = output_base_path
         os.makedirs(output_path, exist_ok=True)
 
         # Create a mapping file to store original video names
@@ -241,7 +245,7 @@ def eval_model(args):
         video_path = args.video_path
         video_preprocess = Video_preprocess()
         image_grid_path = video_preprocess.convert_video_to_grid(
-            video_path, output_base_path=args.output_grid_path
+            video_path, output_base_path=args.output_grid_path, t2v_model_name=args.t2v_model
         )
 
     # Model
