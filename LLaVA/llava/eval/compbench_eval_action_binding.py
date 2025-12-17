@@ -332,10 +332,13 @@ def eval_model(args):
                     print(f"Skipping {grid_image_name}: no mapping found")
                     continue
                 
-                # Find matching prompt by checking if any prompt name is in video name
+                # Find matching prompt by checking if any prompt name is in video name (case-insensitive)
                 matched_prompt = None
+                original_video_name_lower = original_video_name.lower()
                 for prompt_name, prompt_data in name_to_prompt.items():
-                    if prompt_name in original_video_name:
+                    # Convert both to lowercase and replace underscores with spaces for comparison
+                    prompt_name_normalized = prompt_name.lower().replace('_', ' ')
+                    if prompt_name_normalized in original_video_name_lower.replace('_', ' '):
                         matched_prompt = prompt_data
                         break
                 
